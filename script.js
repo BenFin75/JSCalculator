@@ -1,5 +1,5 @@
-let numberOne;
-let numberTwo;
+let numberOne = "NaN";
+let numberTwo= "NaN";
 let operator;
 let answer;
 let finished = 0;
@@ -8,36 +8,32 @@ let output = '0';
 function handleCommand(input) {
     if (finished === 0 && input.match(/[\÷\+\-\x]/g)) {
         operator = input;
-        if (!numberOne) {
+        if (numberOne === "NaN") {
             numberOne = parseFloat(output);
         } else {
             numberTwo = parseFloat(output);
         }
+        operations.forEach(operation => operation.removeEventListener('click', getInput))
         output = 0;
     } else if (finished === 0){
         switch(input){
             case 'AC':
-                numberOne = undefined;
-                numberTwo = undefined;
+                numberOne = "NaN";
+                numberTwo = "NaN";
                 operator = undefined;
                 output = '0';
+                operations.forEach(operation => operation.addEventListener('click', getInput))
                 break;
             case 'C':
                 output = '0';
                 break;
             case '%':
-                if (!numberOne){
-                    numberOne = parseFloat(output)/100;
-                    output = 0;
-                } else {
-                    numberTwo = parseFloat(output)/100;
-                    output = 0;
-                }
+                output = parseFloat(output)/100;
                 break;
             case '=':
                 if (output.toString().includes('%')) {
                     output = numberOne.toString();
-                } else if (numberOne && !numberTwo) {
+                } else if (numberOne !== "NaN" && numberTwo === "NaN") {
                     numberTwo = parseFloat(output);
                     doMath();
                     finished = 1;
@@ -45,6 +41,7 @@ function handleCommand(input) {
                     doMath();
                     finished = 1;
                 }
+                operations.forEach(operation => operation.addEventListener('click', getInput))
                 break;
             case '.':
                 if (output === '0' || output === 0) {
@@ -58,7 +55,7 @@ function handleCommand(input) {
     else {
         switch(input){
             case 'AC':
-                operator = undefined;
+                operator = "NaN";
                 output = '0';
                 break;
             case 'C':
@@ -67,8 +64,8 @@ function handleCommand(input) {
             case '.':
                 output = '0.';
         }
-        numberOne = undefined;
-        numberTwo = undefined;
+        numberOne = "NaN";
+        numberTwo = "NaN";
         finished = 0;
     }
 }
@@ -100,8 +97,8 @@ function getInput (e) {
     if (input >= 0) {
         if (finished === 1) {
             output = input;
-            numberOne = undefined;
-            numberTwo = undefined;
+            numberOne = "NaN";
+            numberTwo = "NaN";
             finished = 0;
         } else if (output === "0.") {
             output += input;
@@ -117,21 +114,24 @@ function getInput (e) {
     if (answer === "You can't do that!") {
         numberOneOutput.textContent = `${answer}`;
         answer = undefined;
-    } else if (numberOne && operator && numberTwo && answer ) {
+    } else if (numberOne !== "NaN" && operator && numberTwo !== "NaN" && answer ) {
         numberOneOutput.textContent = `${numberOne} ${operator} ${numberTwo} ${answer.replace(/.000/g,'')}`;
-    } else if (numberOne && operator && numberTwo) {
+    } else if (numberOne !== "NaN" && operator && numberTwo !== "NaN") {
         numberOneOutput.textContent = `${numberOne} ${operator} ${numberTwo}`;
-    } else if(numberOne && operator) {
+    } else if (numberOne !== "NaN" && operator) {
         numberOneOutput.textContent = `${numberOne} ${operator}`; 
+    } else if (numberOne !== "NaN") {
+        numberOneOutput.textContent = numberOne;
     } else {
-        numberOneOutput.textContent = numberOne;}
+        numberOneOutput.textContent = '';
+    }
     console.log(`output: ${output}`);
     console.log(`operator: ${operator}`);
     console.log(`numberOne: ${numberOne}`);
     console.log(`numberTwo: ${numberTwo}`);
 }
 
-
+const operations = document.querySelectorAll('.operation');
 const screenOutput = document.querySelector('.screenOutput');
 const numberOneOutput = document.querySelector('.numberOne');
 const buttons = document.querySelectorAll('.button');
