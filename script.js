@@ -112,9 +112,8 @@ function doMath () {
     output = 0;
 }
 
-//handles getting the user input and outputing back to the user
-function getInput (e) {
-    const input  = e.target.textContent;
+//takes the input and outputs the correct screen output back to the user
+function main (input) {
     if (input >= 0) {
         if (finished === 1) {
             output = input;
@@ -147,11 +146,12 @@ function getInput (e) {
     } else {
         numberOneOutput.textContent = '';
     }
-    //debugging output to watch the variables as the change
-    console.log(`output: ${output}`);
-    console.log(`operator: ${operator}`);
-    console.log(`numberOne: ${numberOne}`);
-    console.log(`numberTwo: ${numberTwo}`);
+}
+
+//parses the users input
+function getInput (e) {
+    const input  = e.target.textContent;
+    main(input)
 }
 
 //query selectors
